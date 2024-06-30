@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -32,7 +31,7 @@ type config struct {
 }
 
 func makeConfig(configPath string) *config {
-	configData, err := ioutil.ReadFile(configPath)
+	configData, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fail to read config file %s with error %s\n", configPath, err)
 		os.Exit(1)
