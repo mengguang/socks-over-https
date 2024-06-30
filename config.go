@@ -16,7 +16,7 @@ type proxy struct {
 
 type proxyPair struct {
 	Socks proxy
-	HTTP  proxy
+	HTTPS proxy
 }
 
 type config struct {

@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	d := daemon.Make("-s", "socks-over-https", "socks proxy on http tunnel")
+	d := daemon.Make("-s", "socks-over-https", "socks proxy on https tunnel")
 	d.Run(serve)
 }
 
@@ -54,16 +54,16 @@ func serve() {
 			proxyPair.Socks.Address = "127.0.0.1"
 		}
 		if proxyPair.Socks.Port <= 0 || proxyPair.Socks.Port >= 0xffff ||
-			proxyPair.HTTP.Port <= 0 || proxyPair.HTTP.Port >= 0xffff ||
-			len(proxyPair.HTTP.Address) == 0 {
+			proxyPair.HTTPS.Port <= 0 || proxyPair.HTTPS.Port >= 0xffff ||
+			len(proxyPair.HTTPS.Address) == 0 {
 			logger.Fatal("MGR", err, "invalid proxy settings of %+v", proxyPair)
 		}
 		socksAddr := fmt.Sprintf("%s:%d", proxyPair.Socks.Address, proxyPair.Socks.Port)
 		if _, exists := serverMap[socksAddr]; exists {
 			logger.Fatal("MGR", nil, "duplicated socks proxy settings in %+v", proxyPair)
 		}
-		serverMap[socksAddr], err = newServer(bufioPool, logger, proxyPair.HTTP.Address,
-			(uint16)(proxyPair.HTTP.Port), proxyPair.HTTP.User, proxyPair.HTTP.Pass, socksAddr,
+		serverMap[socksAddr], err = newServer(bufioPool, logger, proxyPair.HTTPS.Address,
+			(uint16)(proxyPair.HTTPS.Port), proxyPair.HTTPS.User, proxyPair.HTTPS.Pass, socksAddr,
 			proxyPair.Socks.User, proxyPair.Socks.Pass)
 		if err != nil {
 			logger.Fatal("MGR", err, "fail to make socks server of %+v", proxyPair)

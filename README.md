@@ -51,7 +51,7 @@ the proxy pair is configured as blow
         "user":"",             // proxy username, no-auth by default
         "pass":""              // proxy password, no-auth by default
     },
-    "http":{                   // http tunnel upstream config
+    "https":{                   // https tunnel upstream config
         "address":"10.1.3.1",  // mandatory, upstream http proxy hostname
         "port":1080,           // mandatory, upstream http proxy port
         "user":"",             // proxy username, no-auth by default

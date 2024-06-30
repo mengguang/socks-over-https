@@ -60,7 +60,7 @@ func newServer(pool *bufiopool.Pool, logger log.Logger, httpProxyHost string, ht
 
 	// set up super proxy
 	upstream, err := superproxy.NewSuperProxy(httpProxyHost, httpProxyPort,
-		superproxy.ProxyTypeHTTP, httpProxyUser, httpProxyPass, "")
+		superproxy.ProxyTypeHTTPS, httpProxyUser, httpProxyPass, "")
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (s *server) listenAndServe() error {
 }
 
 func (s *server) httpTunnelDialer(ctx context.Context, network, addr string) (net.Conn, error) {
-	s.logger.Debug("http://"+s.upstream.HostWithPort(),
+	s.logger.Debug("https://"+s.upstream.HostWithPort(),
 		"tunnel to %s from socks5://%s", addr, s.socks5ProxyAddr)
 	if s.upstream == nil {
 		return nil, errNoAvailableUpstream
