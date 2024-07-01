@@ -51,13 +51,19 @@ var (
 	errInvalidBufioPool    = errors.New("invalid bufio pool")
 )
 
-type UseFQDNRewriter struct{}
+// type UseFQDNRewriter struct{}
 
-func (r UseFQDNRewriter) Rewrite(ctx context.Context, request *socks5.Request) (context.Context, *socks5.AddrSpec) {
-	if request.DestAddr.FQDN != "" {
-		request.DestAddr.IP = make([]byte, 0)
-	}
-	return ctx, request.DestAddr
+// func (r UseFQDNRewriter) Rewrite(ctx context.Context, request *socks5.Request) (context.Context, *socks5.AddrSpec) {
+// 	if request.DestAddr.FQDN != "" {
+// 		request.DestAddr.IP = make([]byte, 0)
+// 	}
+// 	return ctx, request.DestAddr
+// }
+
+type NullDNSResolver struct{}
+
+func (d NullDNSResolver) Resolve(ctx context.Context, name string) (context.Context, net.IP, error) {
+	return ctx, []byte{}, nil
 }
 
 func newServer(pool *bufiopool.Pool, logger log.Logger, httpProxyHost string, httpProxyPort uint16,
@@ -79,7 +85,7 @@ func newServer(pool *bufiopool.Pool, logger log.Logger, httpProxyHost string, ht
 	conf := &socks5.Config{
 		Dial:     s.httpTunnelDialer,
 		Logger:   stdlog.New(&stdLogWriter{socks5ProxyAddr, logger}, "", 0),
-		Rewriter: UseFQDNRewriter{},
+		Resolver: NullDNSResolver{},
 	}
 	if len(socks5ProxyUser) > 0 && len(socks5ProxyPass) > 0 {
 		creds := socks5.StaticCredentials{
